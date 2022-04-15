@@ -42,4 +42,19 @@ class Utils {
     final response = await client.post(Uri.parse(Info().insertTime), headers: {"Content-Type": "application/json"}, body: jsonMap);
     return json.decode(response.body);
   }
+
+  timeDetail(uid) async {
+    Map _map = {};
+    _map.addAll({
+      "uid": uid,
+    });
+    var body = json.encode(_map);
+    return postTimeDetail(http.Client(), body, _map);
+  }
+
+  postTimeDetail(http.Client client, jsonMap, Map map) async {
+    final response = await client.post(Uri.parse(Info().timeDetail), headers: {"Content-Type": "application/json"}, body: jsonMap);
+    return json.decode(response.body);
+  }
+
 }
