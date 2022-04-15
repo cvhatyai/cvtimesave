@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:cvtimesave/system/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:toast/toast.dart';
 
 class AddTimeView extends StatefulWidget {
   const AddTimeView({Key? key}) : super(key: key);
@@ -39,6 +42,20 @@ class _AddTimeViewState extends State<AddTimeView> {
         minuteController.text = "30";
       }
     });
+  }
+
+  insertTime() async {
+
+    if(hrController.text.toString() == "" && minuteController.text.toString() == ""){
+      Toast.show("กรุณากรอกชั่วโมงหรือนาที", context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    }else{
+      EasyLoading.show(status: 'loading...');
+      var rs = await Utils().insertTime(hrController.text.toString(), minuteController.text.toString());
+      Toast.show(rs["msg"].toString(), context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+      EasyLoading.dismiss();
+      Navigator.of(context).pop();
+    }
+
   }
 
   @override
@@ -305,7 +322,7 @@ class _AddTimeViewState extends State<AddTimeView> {
                 margin: EdgeInsets.only(bottom: 31, top: 60),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pop();
+                    insertTime();
                   },
                   child: Image.asset(
                     'assets/images/save_btn.png',

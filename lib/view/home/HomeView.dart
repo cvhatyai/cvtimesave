@@ -1,3 +1,4 @@
+import 'package:cvtimesave/system/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  var user = User();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -35,24 +38,26 @@ class _HomeViewState extends State<HomeView> {
                         child: Icon(
                           Icons.person,
                           color: Colors.blue,
-                          size: 38,
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 15),
-                        child: Text(
-                          "โอห์ม ฐิติวัฒน์",
-                          style: TextStyle(fontSize: 22, color: Colors.white),
+                          size: 48,
                         ),
                       ),
                       Expanded(
                         child: Container(
-                          alignment: Alignment.centerRight,
-                          child: Image.asset(
-                            'assets/images/frontpage/noti.png',
-                            width: 30.79,
-                            height: 30.3,
+                          margin: EdgeInsets.only(left: 15),
+                          child: Text(
+                            user.fullname,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 22, color: Colors.white),
                           ),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: Image.asset(
+                          'assets/images/frontpage/noti.png',
+                          width: 30.79,
+                          height: 30.3,
                         ),
                       ),
                     ],
@@ -98,11 +103,28 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                         child: Center(
-                          child: Text(
+                          /*child: Text(
                             "สอบเข้า ญว ให้ได้",
                             style: TextStyle(
                               fontSize: 20,
                               color: Color(0xFF33B1F0), // 2 สีคือยังไง ถ้า user พิมมาเองจะกำหนดยังไงว่า สีน้ำเงินถึงตรงไหน ? ใส่สีน้ำเงินทั้งหมด
+                            ),
+                          ),*/
+                          child: RichText(
+                            text: TextSpan(
+                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "สอบเข้า ญว",
+                                  style: TextStyle(color: Color(0xFF33B1F0)),
+                                ),
+                                TextSpan(
+                                  text: " ให้ได้ ",
+                                  style: TextStyle(color: Color(0xFF707070)),
+                                ),
+                              ],
                             ),
                           ),
                         ),

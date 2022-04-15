@@ -1,10 +1,11 @@
-import 'package:cvtimesave/state/StateView.dart';
+import 'package:cvtimesave/view/state/StateView.dart';
 import 'package:flutter/material.dart';
 
 import 'addtime/AddTimeView.dart';
 import 'chat/ChatView.dart';
 import 'home/HomeView.dart';
 import 'more/MoreView.dart';
+
 
 class FrontPageView extends StatefulWidget {
   const FrontPageView({Key? key}) : super(key: key);
