@@ -1,6 +1,7 @@
 import 'package:cvtimesave/system/Info.dart';
 import 'package:cvtimesave/system/Utils.dart';
 import 'package:cvtimesave/system/user.dart';
+import 'package:cvtimesave/view/member/LoginView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -64,6 +65,18 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  logout() async {
+    if(user.uid == "2"){
+      await user.logout();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginView()),
+        ModalRoute.withName("/"),
+      );
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -107,12 +120,17 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.centerRight,
-                          child: Image.asset(
-                            'assets/images/frontpage/noti.png',
-                            width: 30.79,
-                            height: 30.3,
+                        GestureDetector(
+                          onTap: () {
+                            logout();
+                          },
+                          child: Container(
+                            alignment: Alignment.centerRight,
+                            child: Image.asset(
+                              'assets/images/frontpage/noti.png',
+                              width: 30.79,
+                              height: 30.3,
+                            ),
                           ),
                         ),
                       ],

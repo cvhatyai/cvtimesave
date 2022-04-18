@@ -11,11 +11,10 @@ class Utils {
     await user.init();
   }
 
-  userLogin(username, password) async {
+  userLogin(username) async {
     Map _map = {};
     _map.addAll({
       "username": username,
-      "password": password,
     });
     var body = json.encode(_map);
     return postUserLogin(http.Client(), body, _map);

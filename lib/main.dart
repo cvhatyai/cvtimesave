@@ -48,7 +48,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   var user = User();
 
   @override
@@ -83,6 +82,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Container());
+    return Scaffold(
+        body: Container(
+      decoration: BoxDecoration(
+        color: Colors.transparent,
+        image: DecorationImage(image: AssetImage('assets/images/splash_screen.png'), fit: BoxFit.cover),
+      ),
+    ));
   }
 }
