@@ -46,82 +46,84 @@ class _FrontPageViewState extends State<FrontPageView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          image: DecorationImage(image: AssetImage('assets/images/frontpage/btm_bar.png'), fit: BoxFit.contain, alignment: Alignment.bottomCenter),
+    return SafeArea(
+      child: Scaffold(
+        extendBody: true,
+        body: Center(
+          child: _widgetOptions.elementAt(_selectedIndex),
         ),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            splashColor: Colors.transparent,
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            image: DecorationImage(image: AssetImage('assets/images/frontpage/btm_bar.png'), fit: BoxFit.contain, alignment: Alignment.bottomCenter),
           ),
-          child: BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _selectedIndex,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedFontSize: 11,
-            unselectedFontSize: 11,
-            selectedItemColor: Color(0xFF575553),
-            unselectedItemColor: Color(0xFF575553),
-            onTap: _onItemTapped,
-            items: [
-              BottomNavigationBarItem(
-                icon: Container(
-                  margin: EdgeInsets.only(top: 36),
-                  child: Image.asset(
-                    'assets/images/frontpage/home.png',
-                    width: 22.9,
-                    height: 22.9,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              splashColor: Colors.transparent,
+            ),
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              currentIndex: _selectedIndex,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedFontSize: 11,
+              unselectedFontSize: 11,
+              selectedItemColor: Color(0xFF575553),
+              unselectedItemColor: Color(0xFF575553),
+              onTap: _onItemTapped,
+              items: [
+                BottomNavigationBarItem(
+                  icon: Container(
+                    margin: EdgeInsets.only(top: 36),
+                    child: Image.asset(
+                      'assets/images/frontpage/home.png',
+                      width: 22.9,
+                      height: 22.9,
+                    ),
                   ),
+                  label: 'หน้าหลัก',
                 ),
-                label: 'หน้าหลัก',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  margin: EdgeInsets.only(top: 36),
-                  child: Image.asset(
-                    'assets/images/frontpage/state.png',
-                    width: 22.9,
-                    height: 22.9,
+                BottomNavigationBarItem(
+                  icon: Container(
+                    margin: EdgeInsets.only(top: 36),
+                    child: Image.asset(
+                      'assets/images/frontpage/state.png',
+                      width: 22.9,
+                      height: 22.9,
+                    ),
                   ),
+                  label: 'สถิติ',
                 ),
-                label: 'สถิติ',
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset(
-                  'assets/images/frontpage/add.png',
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  margin: EdgeInsets.only(top: 36),
-                  child: Image.asset(
-                    'assets/images/frontpage/chat.png',
-                    width: 22.9,
-                    height: 22.9,
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    'assets/images/frontpage/add.png',
                   ),
+                  label: '',
                 ),
-                label: 'คุยกับโค้ช',
-              ),
-              BottomNavigationBarItem(
-                icon: Container(
-                  margin: EdgeInsets.only(top: 36),
-                  child: Image.asset(
-                    'assets/images/frontpage/more.png',
-                    width: 22.9,
-                    height: 22.9,
+                BottomNavigationBarItem(
+                  icon: Container(
+                    margin: EdgeInsets.only(top: 36),
+                    child: Image.asset(
+                      'assets/images/frontpage/chat.png',
+                      width: 22.9,
+                      height: 22.9,
+                    ),
                   ),
+                  label: 'คุยกับโค้ช',
                 ),
-                label: 'เมนู',
-              ),
-            ],
+                BottomNavigationBarItem(
+                  icon: Container(
+                    margin: EdgeInsets.only(top: 36),
+                    child: Image.asset(
+                      'assets/images/frontpage/more.png',
+                      width: 22.9,
+                      height: 22.9,
+                    ),
+                  ),
+                  label: 'เมนู',
+                ),
+              ],
+            ),
           ),
         ),
       ),
