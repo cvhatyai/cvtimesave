@@ -56,4 +56,45 @@ class Utils {
     return json.decode(response.body);
   }
 
+  setCannotRequestOtp(username) async {
+    Map _map = {};
+    _map.addAll({
+      "username": username,
+    });
+    var body = json.encode(_map);
+    return postSetCannotRequestOtp(http.Client(), body, _map);
+  }
+
+  postSetCannotRequestOtp(http.Client client, jsonMap, Map map) async {
+    final response = await client.post(Uri.parse(Info().setCannotRequestOtp), headers: {"Content-Type": "application/json"}, body: jsonMap);
+    return json.decode(response.body);
+  }
+
+  updateUserData(uid, _fullname, _schoolClass, _schoolName, _goal) async {
+    Map _map = {};
+    _map.addAll({
+      "uid": uid,
+      "fullname": _fullname,
+      "schoolClass": _schoolClass,
+      "schoolName": _schoolName,
+      "goal": _goal,
+    });
+    var body = json.encode(_map);
+    final client = http.Client();
+    final response = await client.post(Uri.parse(Info().updateUserData), headers: {"Content-Type": "application/json"}, body: body);
+    return json.decode(response.body);
+  }
+
+  checkAppData(platform, version) async {
+    Map _map = {};
+    _map.addAll({
+      "platform": platform,
+      "version": version,
+    });
+    var body = json.encode(_map);
+    final client = http.Client();
+    final response = await client.post(Uri.parse(Info().checkAppVersion), headers: {"Content-Type": "application/json"}, body: body);
+    return json.decode(response.body);
+  }
+
 }

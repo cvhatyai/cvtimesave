@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:cvtimesave/system/Info.dart';
 import 'package:cvtimesave/system/Utils.dart';
 import 'package:cvtimesave/system/user.dart';
 import 'package:cvtimesave/view/FrontPageView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
 
 import 'OtpView.dart';
 import 'RegisterView.dart';
@@ -24,37 +27,43 @@ class _LoginViewState extends State<LoginView> {
 
   var user = User();
 
-  userLogin() async {
+  checkUsername() async {
+    EasyLoading.show(status: 'loading...');
     if (FocusScope.of(context).isFirstFocus) {
       FocusScope.of(context).requestFocus(new FocusNode());
     }
-    //var rs = await Utils().userLogin(_username.text.toString());
+
+    Map _map = {};
+    _map.addAll({
+      "username": _username.text,
+    });
+    var body = json.encode(_map);
+    final client = http.Client();
+    final response = await client.post(Uri.parse(Info().checkHasPhone), headers: {"Content-Type": "application/json"}, body: body);
+    var rs = json.decode(response.body);
+
+    print("checkHasPhone : " + rs.toString());
     EasyLoading.dismiss();
-    /*if (rs["status"] == "success") {
-      await user.init();
-      Toast.show(rs["msg"].toString(), context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    var status = rs["status"].toString();
+    var otpStatus = rs["otpStatus"].toString();
+    var msg = rs["msg"].toString();
+    var reference = rs["reference"].toString();
+    await user.init();
 
-      user.isLogin = true;
-      user.uid = rs["uid"].toString();
-      user.fullname = rs["fullname"].toString();
-      user.username = rs["username"].toString();
-      user.authen_token = rs["authen_token"].toString();
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => FrontPageView()),
-        ModalRoute.withName("/"),
-      );
+    if (otpStatus == "failed") {
+      Toast.show(msg, context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     } else {
-      Toast.show(rs["msg"].toString(), context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-    }*/
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OtpView(),
-      ),
-    );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OtpView(
+            username: _username.text,
+            status: status,
+            reference: reference,
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -126,7 +135,7 @@ class _LoginViewState extends State<LoginView> {
                                   if (text.length == 10) {
                                     if (text.toString()[0] != "0") {
                                       isCanNext = false;
-                                      Toast.show('หมายเลขโทรศัพท์ไม่ถูกต้อง', context, duration: Toast.LENGTH_LONG, gravity: Toast.CENTER);
+                                      Toast.show('หมายเลขโทรศัพท์ไม่ถูกต้อง', context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                                     } else {
                                       isCanNext = true;
                                     }
@@ -158,9 +167,7 @@ class _LoginViewState extends State<LoginView> {
                             ),
                             onPressed: () {
                               if (isCanNext) {
-                                print("adadad");
-                                EasyLoading.show(status: 'loading...');
-                                userLogin();
+                                checkUsername();
                               }
                             },
                             child: Text(

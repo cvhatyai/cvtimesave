@@ -1,6 +1,11 @@
+import 'package:cvtimesave/system/Utils.dart';
+import 'package:cvtimesave/system/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:toast/toast.dart';
+
+import '../FrontPageView.dart';
+import 'LoginView.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -10,175 +15,322 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  final _username = TextEditingController();
-  final _password1 = TextEditingController();
-  final _password2 = TextEditingController();
-  final _name = TextEditingController();
+  final _fullname = TextEditingController();
+  final _schoolClass = TextEditingController();
+  final _schoolName = TextEditingController();
   final _goal = TextEditingController();
 
-  bool _validateName = false;
-  bool _validateGoal = false;
-  bool _validateUsername = false;
-  bool _validatePassword1 = false;
-  bool _validatePassword2 = false;
+  bool isCanNext = false;
 
-  checkUserPhone(){
+  var user = User();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  checkCanPass() {
+    setState(() {
+      if (_fullname.text.isNotEmpty && _schoolClass.text.isNotEmpty && _schoolName.text.isNotEmpty && _goal.text.isNotEmpty) {
+        isCanNext = true;
+      } else {
+        isCanNext = false;
+      }
+    });
+  }
+
+  updateUserData() async {
+    EasyLoading.show(status: 'loading...');
+    var rs = await Utils().updateUserData(user.uid, _fullname.text.toString(), _schoolClass.text.toString(), _schoolName.text.toString(), _goal.text.toString());
+
+    await user.init();
+    user.fullname = _fullname.text.toString();
+    user.goal = _goal.text.toString();
+
+    Toast.show(rs["msg"].toString(), context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    EasyLoading.dismiss();
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => FrontPageView()),
+      ModalRoute.withName("/"),
+    );
+  }
+
+  logOut() async {
+    await user.logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginView()),
+      ModalRoute.withName("/"),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Color(0xFF0173FF),
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios_outlined),
             onPressed: () {
-              Navigator.of(context).pop();
+              logOut();
             },
           ),
-          title: Text('สมัครสมาชิก'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Text("ลงทะเบียน"),
           centerTitle: true,
         ),
         body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(image: AssetImage('assets/images/frontpage/top_bg.png'), fit: BoxFit.contain, alignment: Alignment.topCenter),
+          ),
           width: double.infinity,
           height: double.infinity,
-          color: Colors.white,
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              margin: EdgeInsets.only(top: 8),
               child: Column(
                 children: [
-                  //username
                   Container(
-                    height: 50,
-                    margin: EdgeInsets.only(top: 16),
-                    child: TextField(
-                      controller: _username,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        hintText: 'เบอร์โทรศัพท์',
-                        errorText: _validateUsername ? 'กรุณากรอกเบอร์โทรศัพท์' : null,
+                    margin: EdgeInsets.only(left: 18, right: 18, top: 80),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(19),
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black45,
+                          offset: Offset(3, 3),
+                          blurRadius: 12,
+                        ),
+                      ],
                     ),
-                  ),
-                  //pass1
-                  Container(
-                    height: 50,
-                    margin: EdgeInsets.only(top: 16),
-                    child: TextField(
-                      controller: _password1,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+                    child: Column(
+                      children: [
+                        //_fullname
+                        Container(
+                          margin: EdgeInsets.only(top: 33),
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "ชื่อ",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: TextField(
+                                  controller: _fullname,
+                                  maxLength: 50,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    isDense: true,
+                                    counterText: '',
+                                    fillColor: Color(0xFFFFFFFF),
+                                    filled: true,
+                                    hintText: 'ชื่อเล่นหรือชื่อจริง',
+                                    hintStyle: TextStyle(color: Color(0xFFBFBFBF), fontSize: 22),
+                                  ),
+                                  onChanged: (text) {
+                                    checkCanPass();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+
+                        //_schoolClass
+                        Container(
+                          margin: EdgeInsets.only(top: 33),
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "ระดับชั้น",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: TextField(
+                                  controller: _schoolClass,
+                                  maxLength: 50,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    isDense: true,
+                                    counterText: '',
+                                    fillColor: Color(0xFFFFFFFF),
+                                    filled: true,
+                                    hintText: 'ม.4',
+                                    hintStyle: TextStyle(color: Color(0xFFBFBFBF), fontSize: 22),
+                                  ),
+                                  onChanged: (text) {
+                                    checkCanPass();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        hintText: 'รหัสผ่าน',
-                        errorText: _validatePassword1 ? 'กรุณากรอกรหัสผ่าน' : null,
-                      ),
-                    ),
-                  ),
-                  //pass2
-                  Container(
-                    height: 50,
-                    margin: EdgeInsets.only(top: 16),
-                    child: TextField(
-                      controller: _password2,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+
+                        //_schoolName
+                        Container(
+                          margin: EdgeInsets.only(top: 33),
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "โรงเรียน",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: TextField(
+                                  controller: _schoolName,
+                                  maxLength: 50,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    isDense: true,
+                                    counterText: '',
+                                    fillColor: Color(0xFFFFFFFF),
+                                    filled: true,
+                                    hintText: 'ชื่อโรงเรียนปัจจุบัน',
+                                    hintStyle: TextStyle(color: Color(0xFFBFBFBF), fontSize: 22),
+                                  ),
+                                  onChanged: (text) {
+                                    checkCanPass();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
+
+                        //_goal
+                        Container(
+                          margin: EdgeInsets.only(top: 33),
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "เป้าหมาย",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: TextField(
+                                  controller: _goal,
+                                  maxLength: 50,
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Color(0xFF707070),
+                                      ),
+                                    ),
+                                    isDense: true,
+                                    counterText: '',
+                                    fillColor: Color(0xFFFFFFFF),
+                                    filled: true,
+                                    hintText: 'เช่น สอบเข้าวิศวะ จุฬา',
+                                    hintStyle: TextStyle(color: Color(0xFFBFBFBF), fontSize: 22),
+                                  ),
+                                  onChanged: (text) {
+                                    checkCanPass();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        hintText: 'ยืนยันรหัสผ่าน',
-                        errorText: _validatePassword2 ? 'กรุณากรอกรหัสผ่าน' : null,
-                      ),
-                    ),
-                  ),
-                  //fullname
-                  Container(
-                    height: 50,
-                    margin: EdgeInsets.only(top: 16),
-                    child: TextField(
-                      controller: _name,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        hintText: 'ชื่อ-สกุล',
-                        errorText: _validateName ? 'กรุณากรอกชื่อ-สกุล' : null,
-                      ),
-                    ),
-                  ),
-                  //goal
-                  Container(
-                    height: 50,
-                    margin: EdgeInsets.only(top: 16),
-                    child: TextField(
-                      controller: _goal,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                        ),
-                        hintText: 'เป้าหมาย',
-                        errorText: _validateGoal ? 'กรุณากรอกเป้าหมาย' : null,
-                      ),
-                    ),
-                  ),
-                  //btnLogin
-                  Container(
-                    margin: EdgeInsets.only(top: 16),
-                    height: 40,
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF0173FF)),
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _username.text.isEmpty ? _validateUsername = true : _validateUsername = false;
-                          _password1.text.isEmpty ? _validatePassword1 = true : _validatePassword1 = false;
-                          _password2.text.isEmpty ? _validatePassword2 = true : _validatePassword2 = false;
-                          _name.text.isEmpty ? _validateName = true : _validateName = false;
-                          _goal.text.isEmpty ? _validateGoal = true : _validateGoal = false;
-                          if (!_validateUsername && !_validatePassword1 && !_validatePassword2 && !_validateName && !_validateGoal) {
-                            if (_password1.text == _password2.text) {
-                              EasyLoading.show(status: 'loading...');
-                              checkUserPhone();
-                            } else {
-                              if (FocusScope.of(context).isFirstFocus) {
-                                FocusScope.of(context).requestFocus(new FocusNode());
+
+                        //btnLogin
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 32),
+                          margin: EdgeInsets.only(top: 33, bottom: 70),
+                          height: 44,
+                          width: MediaQuery.of(context).size.width,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(isCanNext ? Color(0xFF0173FF) : Color(0xFFAFAFAF)),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (isCanNext) {
+                                updateUserData();
                               }
-                              Toast.show("กรุณากรอกรหัสผ่านให้ตรงกัน", context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                            }
-                          }
-                        });
-                      },
-                      child: Text("ยืนยันข้อมูล"),
+                            },
+                            child: Text(
+                              "ต่อไป",
+                              style: TextStyle(fontSize: 24),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

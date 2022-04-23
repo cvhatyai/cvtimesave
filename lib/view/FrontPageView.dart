@@ -19,22 +19,27 @@ class _FrontPageViewState extends State<FrontPageView> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomeView(),
     StateView(),
-    HomeView(),
+    AddTimeView(),
     ChatView(),
     MoreView(),
   ];
 
   void _onItemTapped(int index) {
-    if (index == 2) {
+    /*if (index == 2) {
       _showMyDialog();
     } else {
       setState(() {
         _selectedIndex = index;
       });
-    }
+    }*/
+
+    setState(() {
+      _selectedIndex = index;
+    });
+
   }
 
-  Future<void> _showMyDialog() async {
+  /*Future<void> _showMyDialog() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -42,7 +47,7 @@ class _FrontPageViewState extends State<FrontPageView> {
         return AddTimeView();
       },
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

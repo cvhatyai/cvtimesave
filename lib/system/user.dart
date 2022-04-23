@@ -35,6 +35,12 @@ class User {
     _sharedPrefs!.setString('fullname', value);
   }
 
+  String get goal => _sharedPrefs!.getString('goal') ?? "";
+
+  set goal(String value) {
+    _sharedPrefs!.setString('goal', value);
+  }
+
   String get authen_token => _sharedPrefs!.getString('authen_token') ?? "";
 
   set authen_token(String value) {

@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:cvtimesave/system/Info.dart';
 import 'package:cvtimesave/system/Utils.dart';
+import 'package:cvtimesave/system/user.dart';
+import 'package:cvtimesave/view/FrontPageView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:toast/toast.dart';
+import 'package:http/http.dart' as http;
 
 class AddTimeView extends StatefulWidget {
   const AddTimeView({Key? key}) : super(key: key);
@@ -45,293 +50,328 @@ class _AddTimeViewState extends State<AddTimeView> {
   }
 
   insertTime() async {
-
-    if(hrController.text.toString() == "" && minuteController.text.toString() == ""){
+    if (hrController.text.toString() == "" && minuteController.text.toString() == "") {
       Toast.show("กรุณากรอกชั่วโมงหรือนาที", context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-    }else{
+    } else {
       EasyLoading.show(status: 'loading...');
       var rs = await Utils().insertTime(hrController.text.toString(), minuteController.text.toString());
       Toast.show(rs["msg"].toString(), context, duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       EasyLoading.dismiss();
-      Navigator.of(context).pop();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => FrontPageView()),
+        ModalRoute.withName("/"),
+      );
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Container(
-        margin: EdgeInsets.only(
-          left: 30,
-          top: 60,
-          right: 30,
-        ), //top 108 ปุ่มล่างหาย
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(
-            Radius.circular(14),
-          ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              //title
-              Container(
-                margin: EdgeInsets.only(top: 26),
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/popup/clock.png',
-                      width: 24.55,
-                      height: 24.55,
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(left: 15.45),
-                        child: Text(
-                          "บันทึกเวลาทำโจทย์",
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Color(0xFF707070),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //time select
-              Container(
-                height: 42,
-                margin: EdgeInsets.only(top: 24),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    //30 นาที
-                    GestureDetector(
-                      onTap: () {
-                        setSelectAnimate(1);
-                      },
-                      child: Container(
-                        key: UniqueKey(),
-                        margin: EdgeInsets.only(right: 11, left: 20),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                        decoration: BoxDecoration(
-                          color: indexSelected == 1 ? timeSelectedBgColor : timeUnselectBgColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          "30 นาที",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: indexSelected == 1 ? timeSelectedTextColor : timeUnselectTextColor,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    //1 ชั่วโมง
-                    GestureDetector(
-                      onTap: () {
-                        setSelectAnimate(2);
-                      },
-                      child: Container(
-                        key: UniqueKey(),
-                        margin: EdgeInsets.only(right: 11),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                        decoration: BoxDecoration(
-                          color: indexSelected == 2 ? timeSelectedBgColor : timeUnselectBgColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          "1 ชั่วโมง",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: indexSelected == 2 ? timeSelectedTextColor : timeUnselectTextColor,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    //2 ชั่วโมง
-                    GestureDetector(
-                      onTap: () {
-                        setSelectAnimate(3);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 11),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                        decoration: BoxDecoration(
-                          color: indexSelected == 3 ? timeSelectedBgColor : timeUnselectBgColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          "2 ชั่วโมง",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: indexSelected == 3 ? timeSelectedTextColor : timeUnselectTextColor,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    //1 ชั่วโมง 30 นาที
-                    GestureDetector(
-                      onTap: () {
-                        setSelectAnimate(4);
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 11),
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                        decoration: BoxDecoration(
-                          color: indexSelected == 4 ? timeSelectedBgColor : timeUnselectBgColor,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          "1 ชั่วโมง 30 นาที",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: indexSelected == 4 ? timeSelectedTextColor : timeUnselectTextColor,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //line
-              Container(
-                margin: EdgeInsets.only(top: 19),
-                height: 1,
-                color: Color(
-                  0xFFD9D9D9,
-                ),
-              ),
-
-              //time input
-              Container(
-                margin: EdgeInsets.only(top: 45),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 106,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/popup/hr_bg.png'),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 22),
-                          child: TextField(
-                            controller: hrController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 45),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "00",
-                              hintStyle: TextStyle(
-                                color: Color(0xFFB2B2B2),
-                              ),
-                            ),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(2),
-                            ],
-                            onChanged: (val) {
-                              setState(() {
-                                indexSelected = 0;
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(left: 12, right: 12, top: 20),
-                      child: Image.asset(
-                        'assets/images/popup/separator.png',
-                        width: 12,
-                        height: 40,
-                      ),
-                    ),
-                    Container(
-                      width: 106,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/popup/minute_bg.png'),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      child: Center(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 22),
-                          child: TextField(
-                            controller: minuteController,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 45),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "00",
-                              hintStyle: TextStyle(
-                                color: Color(0xFFB2B2B2),
-                              ),
-                            ),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(2),
-                            ],
-                            onChanged: (val) {
-                              setState(() {
-                                indexSelected = 0;
-                              });
-                              if (int.parse(val) > 59) {
-                                minuteController.text = "59";
-                                minuteController.selection = TextSelection.fromPosition(TextPosition(offset: minuteController.text.length));
-                              }
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              //btn
-              Container(
-                margin: EdgeInsets.only(bottom: 31, top: 60),
-                child: GestureDetector(
-                  onTap: () {
-                    insertTime();
-                  },
-                  child: Image.asset(
-                    'assets/images/save_btn.png',
-                    width: 154,
-                    height: 48,
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(image: AssetImage('assets/images/frontpage/top_bg.png'), fit: BoxFit.contain, alignment: Alignment.topCenter),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 30, left: 29, right: 18),
+                  height: 58,
+                  child: Text(
+                    "บันทึกเวลาทำโจทย์",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 22, color: Colors.white),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  margin: EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 100),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(19),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black45,
+                        offset: Offset(3, 3),
+                        blurRadius: 12,
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      //title
+                      /*Container(
+                        margin: EdgeInsets.only(top: 26),
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/popup/clock.png',
+                              width: 24.55,
+                              height: 24.55,
+                            ),
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 15.45),
+                                child: Text(
+                                  "บันทึกเวลาทำโจทย์",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    color: Color(0xFF707070),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),*/
+
+                      //time select
+                      Container(
+                        height: 42,
+                        margin: EdgeInsets.only(top: 24),
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(right: 11, left: 20),
+                              child: Image.asset(
+                                'assets/images/popup/clock.png',
+                                width: 24.55,
+                                height: 24.55,
+                              ),
+                            ),
+
+                            //30 นาที
+                            GestureDetector(
+                              onTap: () {
+                                setSelectAnimate(1);
+                              },
+                              child: Container(
+                                key: UniqueKey(),
+                                margin: EdgeInsets.only(right: 11),
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: indexSelected == 1 ? timeSelectedBgColor : timeUnselectBgColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "30 นาที",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: indexSelected == 1 ? timeSelectedTextColor : timeUnselectTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            //1 ชั่วโมง
+                            GestureDetector(
+                              onTap: () {
+                                setSelectAnimate(2);
+                              },
+                              child: Container(
+                                key: UniqueKey(),
+                                margin: EdgeInsets.only(right: 11),
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: indexSelected == 2 ? timeSelectedBgColor : timeUnselectBgColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "1 ชั่วโมง",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: indexSelected == 2 ? timeSelectedTextColor : timeUnselectTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            //2 ชั่วโมง
+                            GestureDetector(
+                              onTap: () {
+                                setSelectAnimate(3);
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(right: 11),
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: indexSelected == 3 ? timeSelectedBgColor : timeUnselectBgColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "2 ชั่วโมง",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: indexSelected == 3 ? timeSelectedTextColor : timeUnselectTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+
+                            //1 ชั่วโมง 30 นาที
+                            GestureDetector(
+                              onTap: () {
+                                setSelectAnimate(4);
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(right: 11),
+                                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                                decoration: BoxDecoration(
+                                  color: indexSelected == 4 ? timeSelectedBgColor : timeUnselectBgColor,
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                child: Text(
+                                  "1 ชั่วโมง 30 นาที",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: indexSelected == 4 ? timeSelectedTextColor : timeUnselectTextColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //line
+                      Container(
+                        margin: EdgeInsets.only(top: 19),
+                        height: 1,
+                        color: Color(
+                          0xFFD9D9D9,
+                        ),
+                      ),
+
+                      //time input
+                      Container(
+                        margin: EdgeInsets.only(top: 45),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 106,
+                              height: 110,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/popup/hr_bg.png'),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 22),
+                                  child: TextField(
+                                    controller: hrController,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 45),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "00",
+                                      hintStyle: TextStyle(
+                                        color: Color(0xFFB2B2B2),
+                                      ),
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(2),
+                                    ],
+                                    onChanged: (val) {
+                                      setState(() {
+                                        indexSelected = 0;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 12, right: 12, top: 20),
+                              child: Image.asset(
+                                'assets/images/popup/separator.png',
+                                width: 12,
+                                height: 40,
+                              ),
+                            ),
+                            Container(
+                              width: 106,
+                              height: 110,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: AssetImage('assets/images/popup/minute_bg.png'),
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                              child: Center(
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 22),
+                                  child: TextField(
+                                    controller: minuteController,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 45),
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "00",
+                                      hintStyle: TextStyle(
+                                        color: Color(0xFFB2B2B2),
+                                      ),
+                                    ),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      LengthLimitingTextInputFormatter(2),
+                                    ],
+                                    onChanged: (val) {
+                                      setState(() {
+                                        indexSelected = 0;
+                                      });
+                                      if (int.parse(val) > 59) {
+                                        minuteController.text = "59";
+                                        minuteController.selection = TextSelection.fromPosition(TextPosition(offset: minuteController.text.length));
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      //btn
+                      Container(
+                        margin: EdgeInsets.only(bottom: 31, top: 60),
+                        child: GestureDetector(
+                          onTap: () {
+                            insertTime();
+                          },
+                          child: Image.asset(
+                            'assets/images/save_btn.png',
+                            width: 154,
+                            height: 48,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

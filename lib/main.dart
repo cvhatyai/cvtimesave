@@ -1,9 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
+import 'package:cvtimesave/system/Utils.dart';
 import 'package:cvtimesave/system/user.dart';
 import 'package:cvtimesave/view/member/LoginView.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get_version/get_version.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'view/FrontPageView.dart';
 
@@ -23,7 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'บันทึกเวลาทำโจทย์',
+      title: 'สอบติดแน่',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -54,7 +60,78 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkIsLogin();
+    checkAppData();
+  }
+
+  checkAppData() async {
+    String platform;
+    String version;
+
+    if (Platform.isIOS) {
+      platform = "ios";
+    } else {
+      platform = "android";
+    }
+
+    try {
+      version = await GetVersion.projectVersion;
+    } on PlatformException {
+      version = 'Failed to get project version.';
+    }
+
+    var rs = await Utils().checkAppData(platform, version);
+
+    if (rs["status"].toString() == "0") {
+      checkAppVersion(rs["msg"].toString(), rs["url"].toString(), rs["important"].toString());
+    } else {
+      checkIsLogin();
+    }
+  }
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+      exit(0);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> checkAppVersion(msg, url, important) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          //title: Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(msg),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('ยืนยัน'),
+              onPressed: () {
+                if (important == "1") {
+                  _launchInBrowser(url);
+                } else {
+                  checkIsLogin();
+                }
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   checkIsLogin() async {
@@ -62,19 +139,17 @@ class _MyHomePageState extends State<MyHomePage> {
     if (user.isLogin) {
       Timer(
         Duration(seconds: 1),
-        () => Navigator.pushAndRemoveUntil(
+        () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => FrontPageView()),
-          ModalRoute.withName("/"),
         ),
       );
     } else {
       Timer(
         Duration(seconds: 1),
-        () => Navigator.pushAndRemoveUntil(
+        () => Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginView()),
-          ModalRoute.withName("/"),
         ),
       );
     }

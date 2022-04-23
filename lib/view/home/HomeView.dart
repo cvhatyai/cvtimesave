@@ -34,6 +34,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     timeDetail();
   }
 
@@ -51,6 +52,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   timeDetail() async {
+    await user.init();
     var rs = await Utils().timeDetail(user.uid);
     setState(() {
       status = rs["status"];
@@ -65,16 +67,13 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  logout() async {
-    if(user.uid == "2"){
-      await user.logout();
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => LoginView()),
-        ModalRoute.withName("/"),
-      );
-    }
-
+  logOut() async {
+    await user.logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginView()),
+      ModalRoute.withName("/"),
+    );
   }
 
   @override
@@ -122,7 +121,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            logout();
+                            logOut();
                           },
                           child: Container(
                             alignment: Alignment.centerRight,
@@ -177,13 +176,15 @@ class _HomeViewState extends State<HomeView> {
                           ),
                           child: Center(
                             child: RichText(
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               text: TextSpan(
                                 style: TextStyle(
                                   fontSize: 20,
                                 ),
                                 children: [
                                   TextSpan(
-                                    text: "สอบเข้า ญว",
+                                    text: user.goal,
                                     style: TextStyle(color: Color(0xFF33B1F0)),
                                   ),
                                   TextSpan(
