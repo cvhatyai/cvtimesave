@@ -5,6 +5,7 @@ import 'package:cvtimesave/system/Info.dart';
 import 'package:cvtimesave/system/Utils.dart';
 import 'package:cvtimesave/system/user.dart';
 import 'package:cvtimesave/view/FrontPageView.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -78,17 +79,46 @@ class _AddTimeViewState extends State<AddTimeView> {
             child: Column(
               children: [
                 Container(
-                  margin: EdgeInsets.only(top: 30, left: 29, right: 18),
                   height: 58,
-                  child: Text(
-                    "บันทึกเวลาทำโจทย์",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  padding: EdgeInsets.only(top: 16),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_outlined,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => FrontPageView()),
+                            ModalRoute.withName("/"),
+                          );
+                        },
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Text(
+                            "บันทึกเวลาทำโจทย์",
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 22, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_outlined,
+                          color: Colors.transparent,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: 18, right: 18, top: 15, bottom: 100),
+                  margin: EdgeInsets.only(left: 18, right: 18, top: 45, bottom: 100),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(
@@ -104,32 +134,6 @@ class _AddTimeViewState extends State<AddTimeView> {
                   ),
                   child: Column(
                     children: [
-                      //title
-                      /*Container(
-                        margin: EdgeInsets.only(top: 26),
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              'assets/images/popup/clock.png',
-                              width: 24.55,
-                              height: 24.55,
-                            ),
-                            Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 15.45),
-                                child: Text(
-                                  "บันทึกเวลาทำโจทย์",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    color: Color(0xFF707070),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),*/
 
                       //time select
                       Container(
@@ -356,15 +360,41 @@ class _AddTimeViewState extends State<AddTimeView> {
                       //btn
                       Container(
                         margin: EdgeInsets.only(bottom: 31, top: 60),
-                        child: GestureDetector(
-                          onTap: () {
-                            insertTime();
-                          },
-                          child: Image.asset(
-                            'assets/images/save_btn.png',
-                            width: 154,
-                            height: 48,
-                          ),
+                        padding: EdgeInsets.symmetric(horizontal: 35),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    insertTime();
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/save_btn2.png',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => FrontPageView()),
+                                      ModalRoute.withName("/"),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/cancel_btn.png',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
