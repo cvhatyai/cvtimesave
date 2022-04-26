@@ -367,21 +367,6 @@ class _AddTimeViewState extends State<AddTimeView> {
                               child: Container(
                                 child: GestureDetector(
                                   onTap: () {
-                                    insertTime();
-                                  },
-                                  child: Image.asset(
-                                    'assets/images/save_btn2.png',
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: GestureDetector(
-                                  onTap: () {
                                     Navigator.pushAndRemoveUntil(
                                       context,
                                       MaterialPageRoute(builder: (context) => FrontPageView()),
@@ -394,6 +379,24 @@ class _AddTimeViewState extends State<AddTimeView> {
                                 ),
                               ),
                             ),
+
+                            SizedBox(
+                              width: 10,
+                            ),
+
+                            Expanded(
+                              child: Container(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    insertTime();
+                                  },
+                                  child: Image.asset(
+                                    'assets/images/save_btn2.png',
+                                  ),
+                                ),
+                              ),
+                            ),
+
                           ],
                         ),
                       ),
