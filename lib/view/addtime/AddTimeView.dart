@@ -281,6 +281,7 @@ class _AddTimeViewState extends State<AddTimeView> {
                                   margin: EdgeInsets.only(top: 22),
                                   child: TextField(
                                     controller: hrController,
+                                    autofocus: true,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 45),
                                     decoration: InputDecoration(
